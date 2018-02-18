@@ -48,17 +48,21 @@ module.exports = {
           percentages: [],
         };
         _.forEach(data, (item) => {
-          response = {
-            ...response,
-            investors: [
-              ...response.investors,
-              item.investorId,
-            ],
-            percentages: [
-              ...response.percentages,
-              item.percentage,
-            ],
-          };
+          const newInvestors = _.concat(response.investors, item.investorId);
+          response.investors = newInvestors;
+          const newPercentages = _.concat(response.percentages, item.percentage);
+          response.percentages = newPercentages;
+          // response = {
+          //   ...response,
+          //   investors: [
+          //     ...response.investors,
+          //     item.investorId,
+          //   ],
+          //   percentages: [
+          //     ...response.percentages,
+          //     item.percentage,
+          //   ],
+          // };
         });
         const result = {
           responses: [_.omit(response, ['investorId', 'percentage'])],

@@ -18,7 +18,8 @@ module.exports = {
                 return i.investorId && i.investorId;
               });
               const percentages = _.map(sameItems, i => i.percentage);
-              response = [...response, _.assign({}, item, { investors, percentages })];
+              response = _.concat(response, _.assign({}, item, { investors, percentages }));
+              // response = [...response, _.assign({}, item, { investors, percentages })];
             }
             response.push(item);
           });
