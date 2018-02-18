@@ -144,11 +144,39 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'DEV') {
     },
   });
 } else if (process.env.NODE_ENV === 'production') {
+  // server.route({
+  //   path: '/',
+  //   method: 'GET',
+  //   handler: (request, res) => {
+  //     res.redirect('/');
+  //   },
+  // });
+	server.register([
+    inert,
+    vision,
+    {
+      register: hapiSwaggeredUi,
+      options: {
+        title: 'Club de Préstamos API Explorer',
+        path: '/docs',
+        swaggerEndpoint: '/swagger',
+      },
+    }],
+    {
+      select: 'api',
+    },
+    (err) => {
+      if (err) {
+        throw err;
+      }
+    } // eslint-disable-line comma-dangle
+  );
+
   server.route({
     path: '/',
     method: 'GET',
     handler: (request, res) => {
-      res.redirect('/');
+      res.redirect('/docs');
     },
   });
 }
