@@ -9,27 +9,9 @@ module.exports = {
     const provider = Promise.promisify(dataProvider.get[200]);
     provider(req, res)
       .then((data) => {
-        let response = [];
-        if (data.length) {
-          _.forEach(data, (item) => {
-            const sameItems = _.filter(data, { loanId: item.loanId });
-            if (sameItems.length >= 2) {
-              const investors = _.map(sameItems, (i) => {
-                return i.investorId && i.investorId;
-              });
-              const percentages = _.map(sameItems, i => i.percentage);
-              response = _.concat(response, _.assign({}, item, { investors, percentages }));
-              // response = [...response, _.assign({}, item, { investors, percentages })];
-            }
-            response.push(item);
-          });
-        }
-        response = _.chain(response).uniqBy('loanId').value();
-        const result = {
-          responses: response,
-        };
+        const response = _.uniq(data);
         req.totalCount = response.length ? response.length : 0;
-        res(response && result.responses).code(status);
+        res(response).code(status);
       })
       .catch((err) => {
         res(Boom.badRequest(err));

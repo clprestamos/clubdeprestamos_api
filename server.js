@@ -8,7 +8,7 @@ const authJwt = require('hapi-auth-jwt2');
 const path = require('path');
 const vision = require('vision');
 const logger = require('./logger.js');
-const env = require('env2')('./.env');
+const env = require('env2')('./.env.local');
 
 const files = require('./handlers/files');
 const email = require('./handlers/email');
@@ -110,6 +110,7 @@ server.register(authJwt, (err) => {
       const host = process.env.HOST || server.info.host;
       server.plugins.swagger.setHost(host); // we asume port 80
       logger.info('App running on %s:%d', host, process.env.PORT, 'NODE_ENV', process.env.NODE_ENV || 'DEV');
+			console.info('App running on %s:%d', host, process.env.PORT, 'NODE_ENV', process.env.NODE_ENV || 'DEV');
     });
   });
 });
