@@ -32,12 +32,7 @@ module.exports = {
 			const query = squelPg.select()
 											.field('l.id', 'loan_id')
 											.field('l.*')
-											.field('u.name')
-											.field('u.last_name')
-											.field('u.bank')
-											.field('u.client_account')
-											.field('u.identification')
-											.field('u.iban')
+											.field('c.user_id', 'user_id')
 											.field('s.name', 'state_name')
 											.field('li.investor_id')
 											.field('li.percentage')
@@ -45,18 +40,24 @@ module.exports = {
 												.field('SUM(li.percentage)')
 												.from('loan_investor_tb', 'li')
 												.where('li.loan_id = l.id'), 'invest_percentage')
+											.field('u.name')
+											.field('u.last_name')
+											.field('u.avatar')
 											.from('loans_tb', 'l')
 											.join('states_tb', 's',
 												squelPg.expr()
 													.and('l.state_id = s.id')
 											)
-											.join('users_tb', 'u',
+											.join('clients_tb', 'c',
 												squelPg.expr()
-													.and('u.id = l.user_id')
+													.and('c.loan_id = l.id')
 											)
 											.left_join('loan_investor_tb', 'li',
 												squelPg.expr()
 													.and('li.loan_id = l.id')
+											)
+											.right_join('users_tb', 'u',
+												squelPg.expr().and('u.id = c.user_id')
 											)
 											.where('l.id = ?', req.params.id)
 											.toParam();

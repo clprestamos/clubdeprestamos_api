@@ -11,8 +11,11 @@ const Postgresql = (query, cb) => {
       logger.error(`${new Date()} CONNECTION ERROR: ${err}`);
     }
     logger.log('================= QUERY =================');
+    console.log('================= QUERY =================');
     logger.log(query);
+    console.log(query);
     logger.log('=========================================');
+    console.log('=========================================');
     client.query(query, (queryError, result) => {
       if (queryError) {
         cb(queryError, {});

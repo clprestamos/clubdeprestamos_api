@@ -12,7 +12,7 @@ module.exports = {
       const query = squelPg.update()
         .table('loan_investor_tb')
         .setFields(payload)
-        .where('id = ?', req.params.id)
+        .where('investor_id = ?', req.params.id)
         .returning('*')
         .toParam();
       pg(query, callback);

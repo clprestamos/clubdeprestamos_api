@@ -8,47 +8,24 @@ module.exports = {
 	get: {
 		200: (req, res, callback) => {
 			const query = squelPg.select()
-											.field('l.id', 'loan_id')
-											.field('l.amount')
-											.field('l.term')
-											.field('l.reason')
-											.field('l.company')
-											.field('l.state_id')
-											.field('l.request_loan_date')
-											.field('l.user_id')
-											.field('l.last_update')
-											.field('l.interest')
-											.field('l.score')
-											.field('l.approved_date')
-											.field('u.avatar')
-											.field('u.name')
-											.field('u.last_name')
-											.field('u.identification')
-											.field('u.bank')
-											.field('u.client_account')
-											.field('u.iban')
-											.field('li.investor_id')
-											.field('li.percentage', 'investor_percentage')
-											.field('s.name', 'state_name')
-											.field(squelPg.select()
-												.field('SUM(li.percentage)')
-												.from('loan_investor_tb', 'li')
-												.where(`li.investor_id = ${req.params.id}`), 'percentage')
-											.from('loan_investor_tb', 'li')
-											.left_join('loans_tb', 'l',
-												squelPg.expr()
-													.and('l.id = li.loan_id')
-											)
-											.right_join('users_tb', 'u',
-												squelPg.expr()
-													.and('l.user_id = u.id')
-											)
-											.join('states_tb', 's',
-												squelPg.expr()
-													.and('l.state_id = s.id')
-											)
-											.where('li.investor_id = ?', req.params.id)
-											.toParam();
+				.field('l.id', 'loan_id')
+				.field('l.*')
+				.field(
+					squelPg.select()
+						.field('s.name')
+						.from('states_tb', 's')
+						.where('s.id = l.state_id'), 'state_name'
+				)
+				.field(squelPg.select()
+					.field('SUM(li.percentage)')
+					.from('loan_investor_tb', 'li')
+					.where('li.loan_id = l.id'), 'invest_percentage')
+				.from('loans_tb', 'l')
+				.join('loan_investor_tb', 'li',
+					squelPg.expr().and(`li.investor_id = ${req.params.id}`)
+				)
+				.where('l.id = li.loan_id')
+				.toString();
 			pg(query, callback);
 		},
 		default: (req, res, callback) => {

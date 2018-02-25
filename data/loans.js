@@ -12,27 +12,22 @@ module.exports = {
 			let query = squelPg.select()
 										.field('l.id', 'loan_id')
 										.field('l.*')
-										.field('u.name')
-										.field('u.last_name')
-										.field('u.bank')
-										.field('u.client_account')
-										.field('u.identification')
-										.field('u.iban')
-										.field('s.name', 'state_name')
-										.field('li.investor_id')
-										.field('li.percentage')
+										.field(
+											squelPg.select()
+												.field('s.name')
+												.from('states_tb', 's')
+												.where('s.id = l.state_id'),
+											'state_name'
+										)
+										.field(squelPg.select()
+											.field('SUM(li.percentage)')
+											.from('loan_investor_tb', 'li')
+											.where('li.loan_id = l.id'), 'invest_percentage')
+										.field('c.user_id', 'user_id')
 										.from('loans_tb', 'l')
-										.join('states_tb', 's',
+										.left_join('clients_tb', 'c',
 											squelPg.expr()
-												.and('l.state_id = s.id')
-										)
-										.join('users_tb', 'u',
-											squelPg.expr()
-												.and('u.id = l.user_id')
-										)
-										.left_join('loan_investor_tb', 'li',
-											squelPg.expr()
-												.and('li.loan_id = l.id')
+												.and('c.loan_id = l.id')
 										)
 										.toString();
 			pg(query, callback);
