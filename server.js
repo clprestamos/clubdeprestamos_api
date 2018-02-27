@@ -8,7 +8,7 @@ const authJwt = require('hapi-auth-jwt2');
 const path = require('path');
 const vision = require('vision');
 const logger = require('./logger.js');
-const env = require('env2')('./.env.local');
+const env = require('env2')('./.env');
 
 const files = require('./handlers/files');
 const email = require('./handlers/email');
