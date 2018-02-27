@@ -9,7 +9,7 @@ module.exports = {
     const provider = Promise.promisify(dataProvider.get[200]);
     provider(req, res)
       .then((data) => {
-        const response = _.uniq(data);
+        const response = _.uniqBy(data, 'loanId');
         req.totalCount = response.length ? response.length : 0;
         res(response).code(status);
       })

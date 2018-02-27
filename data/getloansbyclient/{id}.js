@@ -7,26 +7,41 @@ const squelPg = squel.useFlavour('postgres');
 module.exports = {
   get: {
     200: (req, res, callback) => {
+      // const query = squelPg.select()
+      //   .field('l.*')
+      //   .field('l.id', 'loan_id')
+      //   .field('s.name', 'state_name')
+      //   .field('li.investor_id')
+      //   .field('li.percentage')
+      //   .field(squelPg.select()
+      //     .field('SUM(li.percentage)')
+      //     .from('loan_investor_tb', 'li')
+      //     .where('li.loan_id = l.id'), 'invest_percentage')
+      //   .from('loans_tb', 'l')
+      //   .join('states_tb', 's',
+      //     squelPg.expr()
+      //       .and('l.state_id = s.id')
+      //   )
+      //   .left_join('loan_investor_tb', 'li',
+      //     squelPg.expr()
+      //       .and('li.loan_id = l.id')
+      //   )
+      //   .where('l.user_id = ?', req.params.id)
+      //   .toParam();
       const query = squelPg.select()
         .field('l.*')
         .field('l.id', 'loan_id')
-        .field('s.name', 'state_name')
-        .field('li.investor_id')
-        .field('li.percentage')
-        .field(squelPg.select()
-          .field('SUM(li.percentage)')
-          .from('loan_investor_tb', 'li')
-          .where('li.loan_id = l.id'), 'invest_percentage')
+        .field(
+          squelPg.select()
+            .field('s.name')
+            .from('states_tb', 's')
+            .where('l.state_id = s.id'), 'state_name'
+        )
         .from('loans_tb', 'l')
-        .join('states_tb', 's',
-          squelPg.expr()
-            .and('l.state_id = s.id')
+        .join('clients_tb', 'c',
+          squelPg.expr().and('c.loan_id = l.id')
         )
-        .left_join('loan_investor_tb', 'li',
-          squelPg.expr()
-            .and('li.loan_id = l.id')
-        )
-        .where('l.user_id = ?', req.params.id)
+        .where('c.user_id = ?', req.params.id)
         .toParam();
       pg(query, callback);
     },

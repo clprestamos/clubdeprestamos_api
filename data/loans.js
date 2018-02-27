@@ -14,6 +14,34 @@ module.exports = {
 										.field('l.*')
 										.field(
 											squelPg.select()
+												.field('u.name')
+												.from('users_tb', 'u')
+												.where('u.id = c.user_id'),
+											'name'
+										)
+										.field(
+											squelPg.select()
+												.field('u.last_name')
+												.from('users_tb', 'u')
+												.where('u.id = c.user_id'),
+											'last_name'
+										)
+										.field(
+											squelPg.select()
+												.field('u.avatar')
+												.from('users_tb', 'u')
+												.where('u.id = c.user_id'),
+											'avatar'
+										)
+										.field(
+											squelPg.select()
+												.field('u.identification')
+												.from('users_tb', 'u')
+												.where('u.id = c.user_id'),
+											'identification'
+										)
+										.field(
+											squelPg.select()
 												.field('s.name')
 												.from('states_tb', 's')
 												.where('s.id = l.state_id'),

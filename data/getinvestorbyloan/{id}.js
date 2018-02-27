@@ -8,17 +8,22 @@ module.exports = {
 	get: {
 		200: (req, res, callback) => {
 			const query = squelPg.select()
-										.field('l.*')
-										.field('l.id', 'loan_id')
-										.field('li.*')
-										.field('u.avatar')
-										.field('u.name')
-										.field('u.last_name')
-										.field('u.identification')
-										.from('loans_tb', 'l')
-										.join('loan_investor_tb', 'li', `l.id = ${req.params.id}`)
-										.left_join('users_tb', 'u', 'li.investor_id = u.id')
-										.toString();
+				.field('u.id', 'user_id')
+				.field('u.name')
+				.field('u.last_name')
+				.field('u.avatar')
+				.field('u.identification')
+				.field('l.*')
+				.field('li.percentage', 'percentage')
+				.from('users_tb', 'u')
+				.left_join('loan_investor_tb', 'li',
+					squelPg.expr().and(`li.loan_id = ${req.params.id}`)
+				)
+				.right_join('loans_tb', 'l',
+					squelPg.expr().and(`l.id = ${req.params.id}`)
+				)
+				.where('u.id = li.investor_id')
+				.toParam();
 			pg(query, callback);
 		},
 		default: (req, res, callback) => {
