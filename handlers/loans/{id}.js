@@ -47,6 +47,7 @@ module.exports = {
               name,
               lastName,
               avatar,
+              identification,
             } = loan;
             return {
               loanId,
@@ -67,6 +68,7 @@ module.exports = {
               name,
               lastName,
               avatar,
+              identification,
             };
           }).uniqBy('loanId');
         }

@@ -1,6 +1,7 @@
 const dataProvider = require('../../data/getmyinvests/{id}.js');
 const Promise = require('bluebird');
 const Boom = require('boom');
+const _ = require('lodash');
 
 module.exports = {
   get: (req, res) => {
@@ -8,11 +9,9 @@ module.exports = {
     const provider = Promise.promisify(dataProvider.get['200']);
     provider(req, res)
       .then((data) => {
-        const result = {
-          responses: data,
-        };
-        req.totalCount = data.length ? data.length : 0;
-        res(data && result.responses).code(status);
+        const result = _.uniqBy(data, 'loanId');
+        req.totalCount = result.length ? result.length : 0;
+        res(result).code(status);
       })
       .catch((err) => {
         res(Boom.badRequest(err));

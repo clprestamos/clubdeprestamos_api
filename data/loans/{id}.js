@@ -43,6 +43,7 @@ module.exports = {
 											.field('u.name')
 											.field('u.last_name')
 											.field('u.avatar')
+											.field('u.identification')
 											.from('loans_tb', 'l')
 											.join('states_tb', 's',
 												squelPg.expr()

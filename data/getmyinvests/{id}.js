@@ -10,6 +10,25 @@ module.exports = {
 			const query = squelPg.select()
 				.field('l.id', 'loan_id')
 				.field('l.*')
+				.field('c.user_id', 'user_id')
+				.field(
+					squelPg.select()
+						.field('u.name')
+						.from('users_tb', 'u')
+						.where('u.id = c.user_id'), 'name'
+				)
+				.field(
+					squelPg.select()
+						.field('u.last_name')
+						.from('users_tb', 'u')
+						.where('u.id = c.user_id'), 'last_name'
+				)
+				.field(
+					squelPg.select()
+						.field('u.avatar')
+						.from('users_tb', 'u')
+						.where('u.id = c.user_id'), 'avatar'
+				)
 				.field(
 					squelPg.select()
 						.field('s.name')
@@ -23,6 +42,9 @@ module.exports = {
 				.from('loans_tb', 'l')
 				.join('loan_investor_tb', 'li',
 					squelPg.expr().and(`li.investor_id = ${req.params.id}`)
+				)
+				.left_join('clients_tb', 'c',
+					squelPg.expr().and('c.loan_id = l.id')
 				)
 				.where('l.id = li.loan_id')
 				.toString();

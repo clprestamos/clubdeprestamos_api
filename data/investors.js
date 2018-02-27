@@ -31,6 +31,10 @@ module.exports = {
 										.field('u.is_active')
 										.field('u.role_id')
 										.field('u.last_update')
+										.field(squelPg.select()
+											.field('COUNT(li.id)')
+											.from('loan_investor_tb', 'li')
+											.where('li.investor_id = u.id'), 'invests')
 										.from('users_tb', 'u')
 										.where('role_id = ?', 2)
 										.toParam();

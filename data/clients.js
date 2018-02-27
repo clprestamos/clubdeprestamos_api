@@ -38,6 +38,7 @@ module.exports = {
                         )
                         .from('users_tb', 'u')
                         .where('u.role_id = ?', 1)
+                        .order('u.id')
                         .toParam();
       pg(query, callback);
     },
